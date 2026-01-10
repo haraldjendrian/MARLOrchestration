@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reinforcement Learning Navigation</title>
+    <title>WARTE2030 | MARL Orchestration Demo</title>
     <style>
         * {
             margin: 0;
@@ -12,66 +12,117 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background-color: #fff;
+            color: #1a1a1a;
+            background-color: #fafafa;
+        }
+
+        /* Confidential badge */
+        .confidential {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 0.85rem;
+            color: #666;
+            z-index: 1000;
         }
 
         /* Header */
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 80px 20px;
-            text-align: center;
+            background: #ffeb3b;
+            padding: 120px 20px 100px;
+            text-align: left;
+            position: relative;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 1;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 4.5rem;
             font-weight: 300;
-            margin-bottom: 10px;
+            margin-bottom: 30px;
+            letter-spacing: -2px;
+            color: #1a1a1a;
         }
 
         .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
+            font-size: 1.4rem;
+            color: #1a1a1a;
+            font-weight: 300;
+            max-width: none;
+            line-height: 1.6;
         }
 
         /* Container */
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 60px 20px;
+            padding: 0 40px;
         }
 
         /* Sections */
         section {
-            margin-bottom: 60px;
+            padding: 80px 0;
+            background: #fafafa;
+        }
+
+        section:nth-child(even) {
+            background: #fff;
         }
 
         h2 {
-            font-size: 2rem;
+            font-size: 3rem;
             font-weight: 300;
-            margin-bottom: 30px;
-            color: #667eea;
+            margin-bottom: 50px;
+            letter-spacing: -0.5px;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 150px;
+            height: 3px;
+            background: #ffeb3b;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 15px;
+            color: #1a1a1a;
         }
 
         p {
             font-size: 1.05rem;
-            line-height: 1.7;
+            line-height: 1.8;
             margin-bottom: 20px;
-            color: #555;
+            color: #333;
         }
 
         /* Video Container */
+        .video-wrapper {
+            max-width: 100%;
+            margin: 60px 0;
+        }
+
         .video-container {
             position: relative;
             padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
-            margin: 40px 0;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            background: #e0e0e0;
+            border: 1px solid #ddd;
         }
 
         .video-container iframe {
@@ -80,229 +131,434 @@
             left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 12px;
         }
 
-        /* Features Grid */
-        .features {
+        /* Architecture Grid */
+        .architecture {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 30px;
-            margin: 40px 0;
+            margin: 60px 0;
         }
 
-        .feature {
-            padding: 30px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            transition: transform 0.3s ease;
+        .arch-item {
+            padding: 40px 30px;
+            background: #fff;
+            border-left: 4px solid #ffeb3b;
+            transition: transform 0.2s ease;
         }
 
-        .feature:hover {
-            transform: translateY(-5px);
+        section:nth-child(even) .arch-item {
+            background: #fafafa;
         }
 
-        .feature h3 {
+        .arch-item:hover {
+            transform: translateX(5px);
+        }
+
+        .arch-item h3 {
             font-size: 1.3rem;
             margin-bottom: 15px;
-            color: #667eea;
+            font-weight: 500;
         }
 
-        .feature p {
+        .arch-item p {
             font-size: 0.95rem;
-            color: #666;
+            color: #555;
+            margin: 0;
         }
 
         /* Stats */
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
-            text-align: center;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin: 60px 0;
         }
 
         .stat {
-            padding: 20px;
+            text-align: center;
+            padding: 40px 20px;
+            background: #fff;
+            position: relative;
+        }
+
+        section:nth-child(even) .stat {
+            background: #fafafa;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: #ffeb3b;
         }
 
         .stat-value {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 300;
-            color: #667eea;
-            margin-bottom: 10px;
+            color: #1a1a1a;
+            margin: 20px 0 10px;
         }
 
         .stat-label {
             font-size: 1rem;
-            color: #666;
+            color: #555;
+            font-weight: 400;
         }
 
         /* Tech Stack */
         .tech-list {
             list-style: none;
             padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 60px 0;
         }
 
         .tech-list li {
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
-            font-size: 1rem;
+            padding: 25px 30px;
+            background: #fff;
+            border-left: 3px solid #ffeb3b;
+            font-size: 0.95rem;
+            color: #333;
         }
 
-        .tech-list li:last-child {
-            border-bottom: none;
+        section:nth-child(even) .tech-list li {
+            background: #fafafa;
         }
 
         .tech-list strong {
-            color: #667eea;
-            margin-right: 10px;
+            color: #1a1a1a;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+        }
+
+        /* Highlight box */
+        .highlight {
+            background: #fff9c4;
+            border-left: 4px solid #ffeb3b;
+            padding: 30px 40px;
+            margin: 40px 0;
+        }
+
+        .highlight p {
+            margin: 0;
+            color: #1a1a1a;
+        }
+
+        .highlight strong {
+            font-weight: 600;
+        }
+
+        /* Deliverables section */
+        .deliverable {
+            margin: 40px 0;
+        }
+
+        .deliverable-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+        }
+
+        .deliverable p {
+            padding-left: 20px;
+            border-left: 3px solid #ffeb3b;
+            margin-left: 0;
         }
 
         /* Footer */
         footer {
-            background: #f8f9fa;
-            padding: 40px 20px;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 60px 40px;
             text-align: center;
-            margin-top: 60px;
+            margin-top: 0;
+        }
+
+        footer p {
+            color: #ccc;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
         }
 
         footer a {
-            color: #667eea;
+            color: #ffeb3b;
             text-decoration: none;
             margin: 0 15px;
+            font-weight: 400;
         }
 
         footer a:hover {
             text-decoration: underline;
         }
 
+        footer strong {
+            color: #fff;
+            font-weight: 500;
+        }
+
         /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             h1 {
-                font-size: 2rem;
+                font-size: 3.5rem;
             }
 
             h2 {
-                font-size: 1.5rem;
+                font-size: 2.5rem;
             }
 
-            .features {
+            .architecture,
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .tech-list {
                 grid-template-columns: 1fr;
             }
+        }
 
-            .stats {
+        @media (max-width: 768px) {
+            .confidential {
+                font-size: 0.75rem;
+            }
+
+            header {
+                padding: 100px 20px 80px;
+            }
+
+            h1 {
+                font-size: 2.8rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 0 20px;
+            }
+
+            .header-content {
+                padding: 0 20px;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+
+            .architecture,
+            .stats,
+            .tech-list {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Confidential Badge -->
+    <div class="confidential">Confidential</div>
+
     <!-- Header -->
     <header>
-        <h1>Reinforcement Learning Navigation</h1>
-        <p class="subtitle">Training Intelligent Agents with Deep Q-Learning</p>
+        <div class="header-content">
+            <h1>WARTE2030</h1>
+            <p class="subtitle">
+                Trustworthy Multi-Agent Reinforcement Learning Orchestration for 
+                Next-Generation Energy Control Centers
+            </p>
+        </div>
     </header>
 
     <!-- Main Content -->
-    <div class="container">
-        <!-- About Section -->
-        <section>
-            <h2>About the Project</h2>
+    
+    <!-- Project Overview -->
+    <section>
+        <div class="container">
+            <h2>Project Overview</h2>
             <p>
-                This project demonstrates a reinforcement learning application that uses Deep Q-Learning (DQN) 
-                to train an agent to navigate complex environments. The agent learns optimal policies through 
-                trial and error, maximizing cumulative rewards over time.
+                WARTE2030 develops novel Multi-Agent Reinforcement Learning (MARL) systems for autonomous 
+                decision-making in safety-critical power grid infrastructure. Our mission: deploy one autonomous 
+                agent in a European transmission system operator control room by 2030.
             </p>
-            <p>
-                Our approach combines experience replay, target networks, and epsilon-greedy exploration to 
-                achieve stable and efficient learning. The trained agent exhibits intelligent behavior and can 
-                generalize to unseen scenarios.
-            </p>
-        </section>
-
-        <!-- Demo Video -->
-        <section>
-            <h2>Demo Video</h2>
-            <div class="video-container">
-                <!-- Replace VIDEO_ID with your YouTube video ID -->
-                <iframe 
-                    src="https://www.youtube.com/embed/HEyiSoGzB4Y" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-                </iframe>
+            <div class="highlight">
+                <p><strong>Challenge:</strong> Electric power grids face increasing complexity from decentralized 
+                renewable sources and infrastructure bottlenecks. Legacy control systems rely on offline, 
+                time-intensive optimization methods that cannot meet real-time operational demands.</p>
             </div>
             <p>
-                Watch the trained agent navigate through a challenging environment, demonstrating learned 
-                behaviors and optimal path planning.
+                We enable real-time congestion management through hierarchical MARL coordination embedded 
+                in cloud-native control center software, combining sub-second response times with regulatory 
+                auditability and human-supervised autonomy.
             </p>
-        </section>
+        </div>
+    </section>
 
-        <!-- Key Features -->
-        <section>
-            <h2>Key Features</h2>
-            <div class="features">
-                <div class="feature">
-                    <h3>Deep Q-Network</h3>
-                    <p>Implements DQN with experience replay and target networks for stable learning</p>
-                </div>
-                <div class="feature">
-                    <h3>Real-time Visualization</h3>
-                    <p>Monitor agent performance with live metrics and reward tracking</p>
-                </div>
-                <div class="feature">
-                    <h3>Optimized Training</h3>
-                    <p>Efficient training pipeline with GPU acceleration support</p>
+    <!-- System Demo -->
+    <section>
+        <div class="container">
+            <h2>System Demonstration</h2>
+            <p>
+                Watch our MARL orchestrator coordinate three agents to resolve a simulated transmission grid 
+                congestion on a realistic network topology. The system demonstrates end-to-end operation from 
+                grid telemetry ingestion through Kafka event streams to explainable operator recommendations.
+            </p>
+            
+            <div class="video-wrapper">
+                <div class="video-container">
+                    <!-- Replace VIDEO_ID with your YouTube video ID -->
+                    <iframe 
+                        src="https://www.youtube.com/embed/HEyiSoGzB4Y" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Results -->
-        <section>
-            <h2>Results</h2>
+    <!-- Architecture -->
+    <section>
+        <div class="container">
+            <h2>System Architecture</h2>
+            <p>
+                Our MARL orchestration implements Centralized Training with Decentralized Execution (CTDE) 
+                in a zero-trust microservice architecture:
+            </p>
+            
+            <div class="architecture">
+                <div class="arch-item">
+                    <h3>Strategic Layer</h3>
+                    <p>Day-ahead congestion planning with 24-hour horizon optimization</p>
+                </div>
+                <div class="arch-item">
+                    <h3>Tactical Layer</h3>
+                    <p>Regional coordination and contingency response (minutes to hours)</p>
+                </div>
+                <div class="arch-item">
+                    <h3>Operational Layer</h3>
+                    <p>Real-time control execution for topology reconfiguration and asset control</p>
+                </div>
+                <div class="arch-item">
+                    <h3>Kafka Event Stream</h3>
+                    <p>Stateless, air-gapped communication backbone</p>
+                </div>
+                <div class="arch-item">
+                    <h3>Anti-Corruption Layer</h3>
+                    <p>Zero-trust security boundary and legacy system integration</p>
+                </div>
+                <div class="arch-item">
+                    <h3>HITL Gateway</h3>
+                    <p>Human-in-the-loop oversight with confidence-based approval thresholds</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Metrics -->
+    <section>
+        <div class="container">
+            <h2>Performance Metrics</h2>
             <div class="stats">
                 <div class="stat">
-                    <div class="stat-value">250+</div>
-                    <div class="stat-label">Average Reward</div>
+                    <div class="stat-value">&lt;10ms</div>
+                    <div class="stat-label">Real-time Re-optimization</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value">95%</div>
-                    <div class="stat-label">Success Rate</div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Coordinated MARL Agents</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value">1M+</div>
-                    <div class="stat-label">Training Steps</div>
+                    <div class="stat-value">2030</div>
+                    <div class="stat-label">Target Deployment Year</div>
                 </div>
             </div>
-            <p>
-                After 500,000 training steps, the agent achieved an average reward of 250+ and successfully 
-                solved the environment with a 95% success rate. The model demonstrates robust performance 
-                across different starting conditions.
-            </p>
-        </section>
+        </div>
+    </section>
 
-        <!-- Technical Details -->
-        <section>
-            <h2>Technical Details</h2>
+    <!-- Technical Stack -->
+    <section>
+        <div class="container">
+            <h2>Technical Implementation</h2>
             <ul class="tech-list">
-                <li><strong>Algorithm:</strong> Deep Q-Learning with Double DQN improvements</li>
-                <li><strong>Framework:</strong> PyTorch / TensorFlow</li>
-                <li><strong>Environment:</strong> OpenAI Gym</li>
-                <li><strong>Training:</strong> 1M+ timesteps with epsilon-greedy exploration</li>
-                <li><strong>Network:</strong> 3-layer CNN + 2 fully connected layers</li>
-                <li><strong>Optimization:</strong> Adam optimizer with learning rate 0.0001</li>
+                <li>
+                    <strong>MARL Framework</strong>
+                    CTDE hierarchical coordination with stable-baselines3
+                </li>
+                <li>
+                    <strong>Event Streaming</strong>
+                    Apache Kafka for stateless communication
+                </li>
+                <li>
+                    <strong>Deployment</strong>
+                    Kubernetes-based microservices with Docker containerization
+                </li>
+                <li>
+                    <strong>Security</strong>
+                    Zero-trust architecture meeting KRITIS requirements
+                </li>
+                <li>
+                    <strong>Observability</strong>
+                    Grafana, Prometheus, and MLflow integration
+                </li>
+                <li>
+                    <strong>Grid Simulation</strong>
+                    Realistic transmission network modeling
+                </li>
             </ul>
-        </section>
-    </div>
+        </div>
+    </section>
+
+    <!-- Deliverables -->
+    <section>
+        <div class="container">
+            <h2>SPRIND Funke Deliverables</h2>
+            
+            <div class="deliverable">
+                <p class="deliverable-title">Stage 1 (Months 1-2):</p>
+                <p>
+                    Two MARL agents deployed on cloud-native platform with validated solution architecture 
+                    and operator UI mockups. Agents respond to Kafka events with documented security mappings 
+                    to KRITIS requirements.
+                </p>
+            </div>
+            
+            <div class="deliverable">
+                <p class="deliverable-title">Stage 2 (Months 3-5):</p>
+                <p>
+                    Complete MARL orchestration layer coordinating three agents end-to-end with zero-trust 
+                    security, safety validation, and production-grade observability. System demonstrates 
+                    millisecond-latency recommendations with explainability features.
+                </p>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer>
         <p>
-            <a href="https://github.com/yourusername/your-repo">View on GitHub</a>
-            <a href="mailto:your.email@example.com">Contact</a>
+            <strong>WARTE2030</strong> — A SPRIND Funke Submission
         </p>
-        <p style="margin-top: 20px; color: #999;">&copy; 2026 Your Name. All rights reserved.</p>
+        <p style="margin-top: 20px;">
+            <a href="https://github.com/yourusername/warte2030">GitHub Repository</a>
+            <a href="mailto:harald.jendrian@example.com">Contact</a>
+        </p>
+        <p style="margin-top: 25px; font-size: 0.85rem;">
+            Developed by Harald Jendrian, Talha Rehman, and BearingPoint GmbH
+        </p>
     </footer>
 </body>
 </html>
